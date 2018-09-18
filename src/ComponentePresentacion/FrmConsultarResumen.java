@@ -338,6 +338,7 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        //aqui buscamos
         model.setRowCount(0);
         model.setColumnCount(0);
         Boticas botica = new Boticas();
