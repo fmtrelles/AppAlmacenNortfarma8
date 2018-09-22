@@ -305,7 +305,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Botica:"/>
+            <Property name="text" type="java.lang.String" value="Zona"/>
           </Properties>
         </Component>
       </SubComponents>

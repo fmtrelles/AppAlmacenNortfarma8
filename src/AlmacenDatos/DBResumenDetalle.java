@@ -9,14 +9,17 @@ import AlmacenClases.Boticas;
 import AlmacenClases.BoticasCombo;
 import AlmacenClases.Guias;
 import AlmacenClases.Resumen_detalle;
+import AlmacenClases.Zonas;
 import ComponenteDatos.BD;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -143,24 +146,24 @@ public class DBResumenDetalle {
         return lista;
     }
 
-    public static ArrayList<Boticas> llenarcomboboticas() {
-        ArrayList<Boticas> listaboticas = new ArrayList<Boticas>();
+    public static ArrayList<Zonas> llenarcombozonas() {
+        ArrayList<Zonas> listazonas = new ArrayList<Zonas>();
         try {
             Connection con = BD.getConnection();
             PreparedStatement st = null;
-            st = con.prepareStatement("select Id_Botica, Descripcion from boticas");
+            st = con.prepareStatement("SELECT Id_Zona, Descripcion from zonas order by Descripcion");
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                Boticas boticas = new Boticas();
-                boticas.setId_Botica(rs.getString(1));
-                boticas.setDescripcion(rs.getString(2));
-                listaboticas.add(boticas);
+                Zonas zonas = new Zonas();
+                zonas.setId_Zona(rs.getInt(1));
+                zonas.setDescripcion(rs.getString(2));
+                listazonas.add(zonas);
             }
-            return listaboticas;
+            return listazonas;
         } catch (SQLException ex) {
-            System.out.println("Error al obtener boticas para llenar combo" + ex);
+            System.out.println("Error al obtener zonas para llenar combo" + ex);
         }
-        return listaboticas;
+        return listazonas;
     }
 
     public static ArrayList<Resumen_detalle> BuscarDetallesTotales() {
@@ -285,6 +288,54 @@ public class DBResumenDetalle {
             System.out.println("Error al Buscar FILTRO: " + ex);
         }
         return lista;
+    }
+    
+    public static ArrayList BuscarDetallesZona(String fecha, int zona, int subzona) {
+
+        ArrayList lista = new ArrayList();
+        try {
+            Connection con = BD.getConnection();
+            PreparedStatement st = null;
+            st = con.prepareStatement("CALL PROC_BUSCAR_ZONAS(?,?,?)");
+            st.setString(1, fecha);
+            st.setInt(2, zona);
+            st.setInt(3, subzona);
+            ResultSet rs = st.executeQuery();
+            int col = rs.getMetaData().getColumnCount();
+            Object[] columnas = new Object[col];
+            ResultSetMetaData md = rs.getMetaData();            
+            while (rs.next()) { 
+                for(int j =0; j<rs.getMetaData().getColumnCount(); j++){                   
+                //lista.add(rs.getObject(j));
+                columnas[j] = rs.getObject(j + 1);
+                lista.add(columnas);
+                } 
+            }
+            return lista;
+        } catch (SQLException ex) {
+            System.out.println("Error al Buscar detalles por Zona " + ex);
+        }
+        return lista;
+    }
+    
+    public static int tamano(String fecha, int zona, int subzona) {        
+        int col = 0;
+        try {
+            Connection con = BD.getConnection();
+            PreparedStatement st = null;
+            st = con.prepareStatement("CALL PROC_BUSCAR_ZONAS(?,?,?)");
+            st.setString(1, fecha);
+            st.setInt(2, zona);
+            st.setInt(3, subzona);
+            ResultSet rs = st.executeQuery();
+            col= rs.getMetaData().getColumnCount();   
+            ResultSetMetaData md = rs.getMetaData();
+            
+            return col;
+        } catch (SQLException ex) {
+            System.out.println("Error al Buscar detalles por Zona " + ex);
+        }
+        return col;
     }
 
 }

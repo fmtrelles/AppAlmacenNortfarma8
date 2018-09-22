@@ -10,8 +10,10 @@ import AlmacenClases.BoticasCombo;
 import AlmacenClases.Excel;
 //import AlmacenClases.GenerarExcel;
 import AlmacenClases.Resumen_detalle;
+import AlmacenClases.Zonas;
 import AlmacenDatos.DBBoticas;
 import AlmacenDatos.DBResumenDetalle;
+import AlmacenDatos.DBZonas;
 import com.sun.rowset.internal.Row;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -53,7 +55,8 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
      * Creates new form FrmConsultarResumen
      */
     private DefaultTableModel model;
-    List<Resumen_detalle> lista;
+    ArrayList lista = new ArrayList();
+    int col=0;
 
     public FrmConsultarResumen() {
         initComponents();
@@ -197,7 +200,7 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<String>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel2.setText("Botica:");
+        jLabel2.setText("Zona");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -337,44 +340,29 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        //aqui buscamos
+        // TODO add your handling code here:        
         model.setRowCount(0);
         model.setColumnCount(0);
-        Boticas botica = new Boticas();
-        String fecha;
-        String idbotica;
-        fecha = obtenerfecha();
+        String fecha = obtenerfecha();
+        Zonas zona = new Zonas();
+        int idzona;
         try {
-            botica = DBBoticas.buscarBoticaDescripcion(jComboBox1.getSelectedItem().toString(), null);
+            zona = DBZonas.buscarZonasDescripcion(jComboBox1.getSelectedItem().toString(), null);
         } catch (SQLException ex) {
             System.out.println("Error al obtener dato del combo" + ex);
         }
-        if (botica != null) {
-            idbotica = botica.getId_Botica();
-            if (jCheckBox1.isSelected()) {
-                lista = DBResumenDetalle.BuscarDetalles(fecha, idbotica);
-                mostrar();
-            } else {
-                lista = DBResumenDetalle.BuscarDetallesTotalBotica(idbotica);
-                mostrar();
-            }
-        } else {
-            if (jCheckBox1.isSelected() == true) {
-
-                lista = DBResumenDetalle.BuscarDetallesTotal(fecha);
-                mostrar();
-            } else {
-                lista = DBResumenDetalle.BuscarDetallesTotales();
-                mostrar();
-            }
+        if(zona != null){
+            idzona = zona.getId_Zona();
+            lista=DBResumenDetalle.BuscarDetallesZona(fecha, idzona, 0);
+            col = DBResumenDetalle.tamano(fecha, idzona, 0);
+            mostrar();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         if (jCheckBox1.isSelected()) {
-            totales();
+            //totales();
         } else {
             JOptionPane.showMessageDialog(null, "Seleccionar una Fecha");
         }
@@ -472,36 +460,36 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
 
     public void mostrar() {
         int i = lista.size();
-        int j = 0;
+        int j = 0;      
         Object[] p = new Object[i];
+        model.setColumnCount(col);
         cabeceras();
         if (i != 0) {
-            do {
-                Resumen_detalle resumen = lista.get(j);
-                model.addRow(p);
-                model.setValueAt(resumen.getCodigo_producto(), j, 0);
-                model.setValueAt(resumen.getDescripcion_producto(), j, 1);
-                model.setValueAt(resumen.getCodigo_laboratorio(), j, 2);
-                model.setValueAt(resumen.getEmpaque(), j, 3);
-                model.setValueAt(resumen.getCodigo_tipo(), j, 4);
-                model.setValueAt(resumen.getId_botica(), j, 5);
-                model.setValueAt(resumen.getCantidad(), j, 6);
-                model.setValueAt(resumen.getFecha_guardado(), j, 7);
+                //Resumen_detalle resumen = lista.get(j);                
+//                  model.addRow(p);
+//                model.setValueAt(resumen.getCodigo_producto(), j, 0);
+//                model.setValueAt(resumen.getDescripcion_producto(), j, 1);
+//                model.setValueAt(resumen.getCodigo_laboratorio(), j, 2);
+//                model.setValueAt(resumen.getEmpaque(), j, 3);
+//                model.setValueAt(resumen.getCodigo_tipo(), j, 4);
+//                model.setValueAt(resumen.getId_botica(), j, 5);
+//                model.setValueAt(resumen.getCantidad(), j, 6);
+//                model.setValueAt(resumen.getFecha_guardado(), j, 7);
                 formatotabla();
                 j++;
-            } while (j < i);
+            
         } else {
             JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public void llenarcombo() {
-        List<Boticas> listaboticas;
-        listaboticas = DBResumenDetalle.llenarcomboboticas();
+        List<Zonas> listazonas;
+        listazonas = DBResumenDetalle.llenarcombozonas();
         jComboBox1.removeAllItems();
-        jComboBox1.addItem("Seleccione Botica");
-        for (Boticas boticas : listaboticas) {
-            jComboBox1.addItem(boticas.getDescripcion());
+        jComboBox1.addItem("Seleccione Zonas");
+        for (Zonas zonas : listazonas) {
+            jComboBox1.addItem(zonas.getDescripcion());
         }
     }
 
@@ -510,21 +498,17 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
         columnModel.getColumn(0).setPreferredWidth(30);
         columnModel.getColumn(1).setPreferredWidth(200);
         columnModel.getColumn(2).setPreferredWidth(20);
-        columnModel.getColumn(3).setPreferredWidth(40);
-        columnModel.getColumn(4).setPreferredWidth(40);
-        columnModel.getColumn(5).setPreferredWidth(40);
-        columnModel.getColumn(6).setPreferredWidth(40);
     }
 
     private void cabeceras() {
-        model.addColumn("Cod. Producto");
-        model.addColumn("Descripción");
-        model.addColumn("Laboratorio");
-        model.addColumn("Empaque");
-        model.addColumn("Tipo");
-        model.addColumn("Botica");
-        model.addColumn("Cantidad");
-        model.addColumn("Fecha");
+//        model.addColumn("Cod. Producto");
+//        model.addColumn("Descripción");
+//        model.addColumn("Laboratorio");
+//        model.addColumn("Empaque");
+//        model.addColumn("Tipo");
+//        model.addColumn("Botica");
+//        model.addColumn("Cantidad");
+//        model.addColumn("Fecha");
     }
 
     private void radios() {
