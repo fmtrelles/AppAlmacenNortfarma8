@@ -5,12 +5,7 @@
  */
 package ComponentePresentacion;
 
-import AlmacenClases.Boticas;
-import AlmacenClases.BoticasCombo;
-import AlmacenClases.Excel;
-//import AlmacenClases.GenerarExcel;
-import AlmacenClases.Resumen_detalle;
-import AlmacenClases.Zonas;
+import AlmacenClases.*;
 import AlmacenDatos.DBBoticas;
 import AlmacenDatos.DBResumenDetalle;
 import AlmacenDatos.DBZonas;
@@ -25,11 +20,7 @@ import javax.swing.table.TableColumnModel;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -54,9 +45,28 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
     /**
      * Creates new form FrmConsultarResumen
      */
-    private DefaultTableModel model;
+    DefaultTableModel model;
+    ArrayList<ZonaTalara> listaTalara = new ArrayList<ZonaTalara>();
+    ArrayList<ZonaChiclayo> listaChiclayo = new ArrayList<ZonaChiclayo>();
+    ArrayList<ZonaSullana> listaSullana = new ArrayList<ZonaSullana>();
+    ArrayList<ZonaTumbes> listaTumbes = new ArrayList<ZonaTumbes>();
+    ArrayList<ZonaTrujillo> listaTrujillo = new ArrayList<ZonaTrujillo>();
+    ArrayList<ZonaLaUnion> listaunion = new ArrayList<ZonaLaUnion>();
+    ArrayList<ZonaSechura> listaSechura = new ArrayList<ZonaSechura>();
+    ArrayList<ZonaCatacaos> listaCatacaos = new ArrayList<ZonaCatacaos>();
+    ArrayList<ZonaPaita> listaPaita = new ArrayList<ZonaPaita>();
+    ArrayList<ZonaChulucanas> listaChulucanas = new ArrayList<ZonaChulucanas>();
+    ArrayList<ZonaChimbote> listaChimbote = new ArrayList<ZonaChimbote>();
+    ArrayList<ZonaMancora> listaMancora = new ArrayList<ZonaMancora>();
+    ArrayList<ZonaCajamarca> listaCajamarca = new ArrayList<ZonaCajamarca>();
+    ArrayList<ZonaPiuraCentro> listaCentro = new ArrayList<ZonaPiuraCentro>();
+    ArrayList<ZonaPiuraCastilla> listaCastilla = new ArrayList<ZonaPiuraCastilla>();
+    ArrayList<ZonaPiuraMercado> listamercado = new ArrayList<ZonaPiuraMercado>();
+    ArrayList<ZonaPiuraUrba> listaUrba = new ArrayList<ZonaPiuraUrba>();
+
     ArrayList lista = new ArrayList();
-    int col=0;
+    int col = 0;
+    int busqueda = 0;
 
     public FrmConsultarResumen() {
         initComponents();
@@ -71,8 +81,8 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
         jTable1.setShowGrid(false);
         radios();
         jRadioButton1.setSelected(true);
-        jRadioButton4.setSelected(true);
         jRadioButton2.setVisible(false);
+        jComboBox2.setEnabled(false);
     }
 
     /**
@@ -93,17 +103,15 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
         jRadioButton2 = new javax.swing.JRadioButton();
         jTextField1 = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<String>();
         jLabel2 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox<String>();
+        jLabel1 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jPanel4 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -160,33 +168,46 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText("Exportar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jRadioButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton2)
-                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton4)
-                .addGap(1, 1, 1))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jRadioButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButton2)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jRadioButton1)
                     .addComponent(jRadioButton2))
-                .addGap(9, 9, 9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4)))
+                    .addComponent(jButton4)
+                    .addComponent(jButton3))
+                .addGap(34, 34, 34))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Buscar")));
@@ -202,18 +223,25 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
 
         jLabel2.setText("Zona");
 
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<String>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel1.setText("Sub Zona");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)))
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jComboBox2, 0, 165, Short.MAX_VALUE)
+                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -222,6 +250,10 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -234,102 +266,46 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
             }
         });
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Exportar"));
-
-        jButton3.setText("Exportar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jRadioButton3.setText("Resumen");
-
-        jRadioButton4.setText("Totales");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jRadioButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jRadioButton4)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton3)
-                .addGap(28, 28, 28))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jButton2.setText("Totales");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jCheckBox1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 965, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(633, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jCheckBox1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(12, 12, 12)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBox1))
+                .addGap(9, 9, 9)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
         if (jCheckBox1.isSelected() == true) {
@@ -340,33 +316,27 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:        
-        model.setRowCount(0);
-        model.setColumnCount(0);
-        String fecha = obtenerfecha();
-        Zonas zona = new Zonas();
-        int idzona;
-        try {
-            zona = DBZonas.buscarZonasDescripcion(jComboBox1.getSelectedItem().toString(), null);
-        } catch (SQLException ex) {
-            System.out.println("Error al obtener dato del combo" + ex);
-        }
-        if(zona != null){
-            idzona = zona.getId_Zona();
-            lista=DBResumenDetalle.BuscarDetallesZona(fecha, idzona, 0);
-            col = DBResumenDetalle.tamano(fecha, idzona, 0);
-            mostrar();
-        }
+        // TODO add your handling code here:
+        mostrar();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        if (jCheckBox1.isSelected()) {
-            //totales();
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccionar una Fecha");
+        ExportarExcel();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        aplicarfiltro();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            aplicarfiltro();
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jTextField1KeyPressed
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
         // TODO add your handling code here:
@@ -378,69 +348,147 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
         jTextField1.setText("");
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        model.setRowCount(0);
-        model.setColumnCount(0);
-        String lab = jTextField1.getText();
-        String fecha = obtenerfecha();
-        if (jRadioButton1.isSelected() && jRadioButton4.isSelected()) {
-            if (jTextField1.getText().equals("")) {
-                lista = DBResumenDetalle.BuscarTotales(fecha);
-                mostrar();
-                filtro();
-            } else {
-                lista = DBResumenDetalle.FiltrarTotalesFiltro(jTextField1.getText(), fecha);
-                mostrar();
-                filtro();
-            }
-        }
-        if (jRadioButton3.isSelected()) {
+    public void mostrar(){
+        busqueda = 0;
+        if (busqueda == 0) {
+            model.setRowCount(0);
+            model.setColumnCount(0);
+            int idsubzona = 0;
+            String fecha = obtenerfecha();
+            Zonas zonacombo = new Zonas();
+            int idzona;
             try {
-                Boticas botica;
-                String idbotica;
-                botica = DBBoticas.buscarBoticaDescripcion(jComboBox1.getSelectedItem().toString(), null);
-                if (botica != null) {
-                    idbotica = botica.getId_Botica();
-                    if (jCheckBox1.isSelected()) {
-                        lista = DBResumenDetalle.BuscarDetalles(fecha, idbotica);
-                        mostrar();
-                        filtro();
-                    } else {
-                        lista = DBResumenDetalle.BuscarDetallesTotalBotica(idbotica);
-                        mostrar();
-                        filtro();
-                    }
-                } else {
-                    if (jCheckBox1.isSelected() == true) {
-                        lista = DBResumenDetalle.BuscarDetallesTotal(fecha);
-                        mostrar();
-                        filtro();
-                    } else {
-                        lista = DBResumenDetalle.BuscarDetallesTotales();
-                        mostrar();
-                        filtro();
-                    }
-                }
+                zonacombo = DBZonas.buscarZonasDescripcion(jComboBox1.getSelectedItem().toString(), null);
             } catch (SQLException ex) {
-                System.out.println("Error al exportar: " + ex);
+                System.out.println("Error al obtener dato del combo" + ex);
+            }
+            if (zonacombo != null) {
+                idzona = zonacombo.getId_Zona();
+                if (idzona == 100) {
+                    if (jComboBox2.getSelectedItem() == "Centro") {
+                        idsubzona = 100;
+                        zonacombo(idzona, idsubzona);
+                        listaCentro = DBResumenDetalle.BuscarDetallesZonaPiuraCentro(fecha, idzona, idsubzona);
+                        mostrarcentro();
+                    }
+                    if (jComboBox2.getSelectedItem() == "Castilla") {
+                        idsubzona = 101;
+                        zonacombo(idzona, idsubzona);
+                        listaCastilla = DBResumenDetalle.BuscarDetallesZonaPiuraCastilla(fecha, idzona, idsubzona);
+                        mostrarcastilla();
+                    }
+                    if (jComboBox2.getSelectedItem() == "Mercado") {
+                        idsubzona = 102;
+                        zonacombo(idzona, idsubzona);
+                        listamercado = DBResumenDetalle.BuscarDetallesZonaPiuraMercado(fecha, idzona, idsubzona);
+                        mostrarmercado();
+                    }
+                    if (jComboBox2.getSelectedItem() == "Urba - Zona Oeste") {
+                        idsubzona = 103;
+                        zonacombo(idzona, idsubzona);
+                        listaUrba = DBResumenDetalle.BuscarDetallesZonaPiuraUrba(fecha, idzona, idsubzona);
+                        mostrarurba();
+                    }
+                    jComboBox2.setEnabled(true);
+                    busqueda = 1;
+                    idsubzona = 0;
+                }
+                if (idzona == 101) {
+                    zonacombo(idzona, idsubzona);
+                    listaChiclayo = DBResumenDetalle.BuscarDetallesZonaChiclayo(fecha, idzona, idsubzona);
+                    mostrarchiclayo();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 102) {
+                    zonacombo(idzona, idsubzona);
+                    listaSullana = DBResumenDetalle.BuscarDetallesZonaSullana(fecha, idzona, idsubzona);
+                    mostrarsullana();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 103) {
+                    zonacombo(idzona, idsubzona);
+                    listaTumbes = DBResumenDetalle.BuscarDetallesZonaTumbes(fecha, idzona, idsubzona);
+                    mostrarTumbes();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 104) {
+                    zonacombo(idzona, idsubzona);
+                    listaTrujillo = DBResumenDetalle.BuscarDetallesZonaTrujillo(fecha, idzona, idsubzona);
+                    mostrarTrujillo();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 105) {
+                    zonacombo(idzona, idsubzona);
+                    listaunion = DBResumenDetalle.BuscarDetallesZonaUnion(fecha, idzona, idsubzona);
+                    mostrarUnion();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 106) {
+                    zonacombo(idzona, idsubzona);
+                    listaSechura = DBResumenDetalle.BuscarDetallesZonaSechura(fecha, idzona, idsubzona);
+                    mostrarsechura();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 107) {
+                    zonacombo(idzona, idsubzona);
+                    listaTalara = DBResumenDetalle.BuscarDetallesZonaTalara(fecha, idzona, idsubzona);
+                    mostrartalara();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 108) {
+                    zonacombo(idzona, idsubzona);
+                    listaCatacaos = DBResumenDetalle.BuscarDetallesZonaCatacaos(fecha, idzona, idsubzona);
+                    mostrarCatacaos();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 109) {
+                    zonacombo(idzona, idsubzona);
+                    listaPaita = DBResumenDetalle.BuscarDetallesZonaPaita(fecha, idzona, idsubzona);
+                    mostrarPaita();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 110) {
+                    zonacombo(idzona, idsubzona);
+                    listaChulucanas = DBResumenDetalle.BuscarDetallesZonaChulucanas(fecha, idzona, idsubzona);
+                    mostrarChulucanas();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 111) {
+                    zonacombo(idzona, idsubzona);
+                    listaChimbote = DBResumenDetalle.BuscarDetallesZonaChimbote(fecha, idzona, idsubzona);
+                    mostrarChimbote();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 112) {
+                    zonacombo(idzona, idsubzona);
+                    listaMancora = DBResumenDetalle.BuscarDetallesZonaMancora(fecha, idzona, idsubzona);
+                    mostrarMancora();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 115) {
+                    zonacombo(idzona, idsubzona);
+                    listaCajamarca = DBResumenDetalle.BuscarDetallesZonaCajamarca(fecha, idzona, idsubzona);
+                    mostrarCajamarca();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
             }
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:       
-        aplicarfiltro();
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
-        // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            aplicarfiltro();
-        }
-    }//GEN-LAST:event_jTextField1KeyPressed
-
-    public void filtro() {
+    }
+    
+    public void ExportarExcel() {
         if (model.getRowCount() > 0) {
             try {
                 JFileChooser guardar = new JFileChooser();
@@ -458,26 +506,284 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
         }
     }
 
-    public void mostrar() {
-        int i = lista.size();
-        int j = 0;      
+    public void mostrartalara() {
+        model.setRowCount(0);
+        //model.setColumnCount(0);
+        int i = listaTalara.size();
         Object[] p = new Object[i];
-        model.setColumnCount(col);
-        cabeceras();
         if (i != 0) {
-                //Resumen_detalle resumen = lista.get(j);                
-//                  model.addRow(p);
-//                model.setValueAt(resumen.getCodigo_producto(), j, 0);
-//                model.setValueAt(resumen.getDescripcion_producto(), j, 1);
-//                model.setValueAt(resumen.getCodigo_laboratorio(), j, 2);
-//                model.setValueAt(resumen.getEmpaque(), j, 3);
-//                model.setValueAt(resumen.getCodigo_tipo(), j, 4);
-//                model.setValueAt(resumen.getId_botica(), j, 5);
-//                model.setValueAt(resumen.getCantidad(), j, 6);
-//                model.setValueAt(resumen.getFecha_guardado(), j, 7);
-                formatotabla();
-                j++;
-            
+            for (int j = 0; j < i; j++) {
+                ZonaTalara resumen = listaTalara.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF25(), j, 3);
+                model.setValueAt(resumen.getF31(), j, 4);
+                model.setValueAt(resumen.getTotal(), j, 5);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarchiclayo() {
+        model.setRowCount(0);
+        int i = listaChiclayo.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaChiclayo resumen = listaChiclayo.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF8(), j, 3);
+                model.setValueAt(resumen.getF9(), j, 4);
+                model.setValueAt(resumen.getF10(), j, 5);
+                model.setValueAt(resumen.getF13(), j, 6);
+                model.setValueAt(resumen.getF15(), j, 7);
+                model.setValueAt(resumen.getF18(), j, 8);
+                model.setValueAt(resumen.getF19(), j, 9);
+                model.setValueAt(resumen.getF30(), j, 10);
+                model.setValueAt(resumen.getF36(), j, 11);
+                model.setValueAt(resumen.getF51(), j, 12);
+                model.setValueAt(resumen.getF61(), j, 13);
+                model.setValueAt(resumen.getF67(), j, 14);
+                model.setValueAt(resumen.getTotal(), j, 15);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarsullana() {
+        model.setRowCount(0);
+        int i = listaSullana.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaSullana resumen = listaSullana.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getS1(), j, 3);
+                model.setValueAt(resumen.getF5(), j, 4);
+                model.setValueAt(resumen.getF11(), j, 5);
+                model.setValueAt(resumen.getF68(), j, 6);
+                model.setValueAt(resumen.getF73(), j, 7);
+                model.setValueAt(resumen.getTotal(), j, 8);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarTumbes() {
+        model.setRowCount(0);
+        int i = listaTumbes.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaTumbes resumen = listaTumbes.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF7(), j, 3);
+                model.setValueAt(resumen.getF12(), j, 4);
+                model.setValueAt(resumen.getF16(), j, 5);
+                model.setValueAt(resumen.getF26(), j, 6);
+                model.setValueAt(resumen.getF27(), j, 7);
+                model.setValueAt(resumen.getF28(), j, 8);
+                model.setValueAt(resumen.getF29(), j, 9);
+                model.setValueAt(resumen.getF37(), j, 10);
+                model.setValueAt(resumen.getF64(), j, 11);
+                model.setValueAt(resumen.getF66(), j, 12);
+                model.setValueAt(resumen.getTotal(), j, 13);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarTrujillo() {
+        model.setRowCount(0);
+        int i = listaTrujillo.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaTrujillo resumen = listaTrujillo.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF17(), j, 3);
+                model.setValueAt(resumen.getF21(), j, 4);
+                model.setValueAt(resumen.getF22(), j, 5);
+                model.setValueAt(resumen.getF23(), j, 6);
+                model.setValueAt(resumen.getF38(), j, 7);
+                model.setValueAt(resumen.getF48(), j, 8);
+                model.setValueAt(resumen.getF52(), j, 9);
+                model.setValueAt(resumen.getF53(), j, 10);
+                model.setValueAt(resumen.getF56(), j, 11);
+                model.setValueAt(resumen.getTotal(), j, 12);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarUnion() {
+        model.setRowCount(0);
+        int i = listaunion.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaLaUnion resumen = listaunion.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF39(), j, 3);
+                model.setValueAt(resumen.getTotal(), j, 4);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarsechura() {
+        model.setRowCount(0);
+        int i = listaSechura.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaSechura resumen = listaSechura.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF41(), j, 3);
+                model.setValueAt(resumen.getTotal(), j, 4);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarCatacaos() {
+        model.setRowCount(0);
+        int i = listaCatacaos.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaCatacaos resumen = listaCatacaos.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF45(), j, 3);
+                model.setValueAt(resumen.getTotal(), j, 4);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarPaita() {
+        model.setRowCount(0);
+        int i = listaPaita.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaPaita resumen = listaPaita.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF46(), j, 3);
+                model.setValueAt(resumen.getF60(), j, 4);
+                model.setValueAt(resumen.getTotal(), j, 5);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarChulucanas() {
+        model.setRowCount(0);
+        int i = listaChulucanas.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaChulucanas resumen = listaChulucanas.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF47(), j, 3);
+                model.setValueAt(resumen.getTotal(), j, 4);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarChimbote() {
+        model.setRowCount(0);
+        int i = listaChimbote.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaChimbote resumen = listaChimbote.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF54(), j, 3);
+                model.setValueAt(resumen.getTotal(), j, 4);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarMancora() {
+        model.setRowCount(0);
+        int i = listaMancora.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaMancora resumen = listaMancora.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescriocion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF42(), j, 3);
+                model.setValueAt(resumen.getTotal(), j, 4);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarCajamarca() {
+        model.setRowCount(0);
+        int i = listaCajamarca.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaCajamarca resumen = listaCajamarca.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF55(), j, 3);
+                model.setValueAt(resumen.getF57(), j, 4);
+                model.setValueAt(resumen.getTotal(), j, 5);
+            }
         } else {
             JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
         }
@@ -491,53 +797,270 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
         for (Zonas zonas : listazonas) {
             jComboBox1.addItem(zonas.getDescripcion());
         }
+        jComboBox2.removeAllItems();
+        jComboBox2.addItem("Seleccione Subzona");
+        jComboBox2.addItem("Centro");
+        jComboBox2.addItem("Castilla");
+        jComboBox2.addItem("Mercado");
+        jComboBox2.addItem("Urba - Zona Oeste");
     }
 
     public void formatotabla() {
         TableColumnModel columnModel = jTable1.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(30);
+        columnModel.getColumn(0).setPreferredWidth(100);
         columnModel.getColumn(1).setPreferredWidth(200);
-        columnModel.getColumn(2).setPreferredWidth(20);
+        columnModel.getColumn(2).setPreferredWidth(80);
     }
 
     private void cabeceras() {
-//        model.addColumn("Cod. Producto");
-//        model.addColumn("Descripción");
-//        model.addColumn("Laboratorio");
-//        model.addColumn("Empaque");
-//        model.addColumn("Tipo");
-//        model.addColumn("Botica");
-//        model.addColumn("Cantidad");
-//        model.addColumn("Fecha");
+        model.addColumn("Cod. Producto");
+        model.addColumn("Descripción");
+        model.addColumn("Laboratorio");
+        model.addColumn("Boticas");
+        model.addColumn("Total");
     }
 
     private void radios() {
         buttonGroup1.add(jRadioButton1);
         buttonGroup1.add(jRadioButton2);
-        buttonGroup2.add(jRadioButton3);
-        buttonGroup2.add(jRadioButton4);
+    }
+
+    public void mostrarcentro() {
+        model.setRowCount(0);
+        int i = listaCentro.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaPiuraCentro resumen = listaCentro.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF1(), j, 3);
+                model.setValueAt(resumen.getF2(), j, 4);
+                model.setValueAt(resumen.getF3(), j, 5);
+                model.setValueAt(resumen.getF4(), j, 6);
+                model.setValueAt(resumen.getF35(), j, 7);
+                model.setValueAt(resumen.getF70(), j, 8);
+                model.setValueAt(resumen.getCen(), j, 9);
+                model.setValueAt(resumen.getTotal(), j, 10);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarcastilla() {
+        model.setRowCount(0);
+        int i = listaCastilla.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaPiuraCastilla resumen = listaCastilla.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF34(), j, 3);
+                model.setValueAt(resumen.getF43(), j, 4);
+                model.setValueAt(resumen.getF49(), j, 5);
+                model.setValueAt(resumen.getF59(), j, 6);
+                model.setValueAt(resumen.getF71(), j, 7);
+                model.setValueAt(resumen.getAsu(), j, 8);
+                model.setValueAt(resumen.getTotal(), j, 9);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarmercado() {
+        model.setRowCount(0);
+        int i = listamercado.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaPiuraMercado resumen = listamercado.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF20(), j, 3);
+                model.setValueAt(resumen.getF24(), j, 4);
+                model.setValueAt(resumen.getF32(), j, 5);
+                model.setValueAt(resumen.getF33(), j, 6);
+                model.setValueAt(resumen.getF62(), j, 7);
+                model.setValueAt(resumen.getTotal(), j, 8);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrarurba() {
+        model.setRowCount(0);
+        int i = listaUrba.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaPiuraUrba resumen = listaUrba.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getF6(), j, 3);
+                model.setValueAt(resumen.getF14(), j, 4);
+                model.setValueAt(resumen.getF40(), j, 5);
+                model.setValueAt(resumen.getF44(), j, 6);
+                model.setValueAt(resumen.getF63(), j, 7);
+                model.setValueAt(resumen.getF69(), j, 8);
+                model.setValueAt(resumen.getF72(), j, 9);
+                model.setValueAt(resumen.getTotal(), j, 10);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void aplicarfiltro() {
         model.setRowCount(0);
         model.setColumnCount(0);
         String fecha = obtenerfecha();
-        if (jTextField1.getText().equals("")) {
-            lista = DBResumenDetalle.BuscarTotales(fecha);
-            mostrar();
-        } else {
-            lista = DBResumenDetalle.FiltrarTotalesFiltro(jTextField1.getText(), fecha);
-            mostrar();
+        int idsubzona = 0;
+        Zonas zonacombo = new Zonas();
+        int idzona;
+        try {
+            zonacombo = DBZonas.buscarZonasDescripcion(jComboBox1.getSelectedItem().toString(), null);
+        } catch (SQLException ex) {
+            System.out.println("Error al obtener dato del combo" + ex);
         }
-    }
-
-    private void totales() {
-        model.setRowCount(0);
-        model.setColumnCount(0);
-        String fecha;
-        fecha = obtenerfecha();
-        lista = DBResumenDetalle.BuscarTotales(fecha);
-        mostrar();
+        if (jTextField1.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Ingrese LABORATORIO a filtrar", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            if (zonacombo != null) {
+                idzona = zonacombo.getId_Zona();
+                if (idzona == 100) {
+                    if (jComboBox2.getSelectedItem() == "Centro") {
+                        idsubzona = 100;
+                        zonacombo(idzona, idsubzona);
+                        listaCentro = DBResumenDetalle.BuscarDetallesZonaPiuraCentroFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                        mostrarcentro();
+                    }
+                    if (jComboBox2.getSelectedItem() == "Castilla") {
+                        idsubzona = 101;
+                        zonacombo(idzona, idsubzona);
+                        listaCastilla = DBResumenDetalle.BuscarDetallesZonaPiuraCastillaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                        mostrarcastilla();
+                    }
+                    if (jComboBox2.getSelectedItem() == "Mercado") {
+                        idsubzona = 102;
+                        zonacombo(idzona, idsubzona);
+                        listamercado = DBResumenDetalle.BuscarDetallesZonaPiuraMercadoFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                        mostrarmercado();
+                    }
+                    if (jComboBox2.getSelectedItem() == "Urba - Zona Oeste") {
+                        idsubzona = 103;
+                        zonacombo(idzona, idsubzona);
+                        listaUrba = DBResumenDetalle.BuscarDetallesZonaPiuraUrbaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                        mostrarurba();
+                    }
+                    jComboBox2.setEnabled(true);
+                    busqueda = 1;
+                    idsubzona = 0;
+                }
+                if (idzona == 101) {
+                    zonacombo(idzona, idsubzona);
+                    listaChiclayo = DBResumenDetalle.BuscarDetallesZonaChiclayoFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarchiclayo();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 102) {
+                    zonacombo(idzona, idsubzona);
+                    listaSullana = DBResumenDetalle.BuscarDetallesZonaSullanaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarsullana();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 103) {
+                    zonacombo(idzona, idsubzona);
+                    listaTumbes = DBResumenDetalle.BuscarDetallesZonaTumbesFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarTumbes();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 104) {
+                    zonacombo(idzona, idsubzona);
+                    listaTrujillo = DBResumenDetalle.BuscarDetallesZonaTrujilloFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarTrujillo();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 105) {
+                    zonacombo(idzona, idsubzona);
+                    listaunion = DBResumenDetalle.BuscarDetallesZonaUnionFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarUnion();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 106) {
+                    zonacombo(idzona, idsubzona);
+                    listaSechura = DBResumenDetalle.BuscarDetallesZonaSechuraFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarsechura();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 107) {
+                    zonacombo(idzona, idsubzona);
+                    listaTalara = DBResumenDetalle.BuscarDetallesZonaTalaraFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrartalara();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 108) {
+                    zonacombo(idzona, idsubzona);
+                    listaCatacaos = DBResumenDetalle.BuscarDetallesZonaCatacaosFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarCatacaos();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 109) {
+                    zonacombo(idzona, idsubzona);
+                    listaPaita = DBResumenDetalle.BuscarDetallesZonaPaitaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarPaita();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 110) {
+                    zonacombo(idzona, idsubzona);
+                    listaChulucanas = DBResumenDetalle.BuscarDetallesZonaChulucanasFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarChulucanas();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 111) {
+                    zonacombo(idzona, idsubzona);
+                    listaChimbote = DBResumenDetalle.BuscarDetallesZonaChimboteFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarChimbote();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 112) {
+                    zonacombo(idzona, idsubzona);
+                    listaMancora = DBResumenDetalle.BuscarDetallesZonaMancoraFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarMancora();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+                if (idzona == 115) {
+                    zonacombo(idzona, idsubzona);
+                    listaCajamarca = DBResumenDetalle.BuscarDetallesZonaCajamarcaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    mostrarCajamarca();
+                    busqueda = 0;
+                    jComboBox2.setEnabled(false);
+                }
+            }
+        }
     }
 
     private String obtenerfecha() {
@@ -548,6 +1071,204 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
         dia = jDateChooser1.getCalendar().get(Calendar.DAY_OF_MONTH);
         fecha = anho + "-" + mes + "-" + dia;
         return fecha;
+    }
+
+    private void zonacombo(int idzona, int idsubzona) {
+        if (idzona == 100) {
+            if (idsubzona == 100) {
+                model.addColumn("Cod. Producto");
+                model.addColumn("Descripcion");
+                model.addColumn("Laboratorio");
+                model.addColumn("F1");
+                model.addColumn("F2");
+                model.addColumn("F3");
+                model.addColumn("F4");
+                model.addColumn("F35");
+                model.addColumn("F70");
+                model.addColumn("CEN");
+                model.addColumn("Total");
+                formatotabla();
+            }
+            if (idsubzona == 101) {
+                model.addColumn("Cod. Producto");
+                model.addColumn("Descripcion");
+                model.addColumn("Laboratorio");
+                model.addColumn("F34");
+                model.addColumn("F43");
+                model.addColumn("F49");
+                model.addColumn("F59");
+                model.addColumn("F71");
+                model.addColumn("ASU");
+                model.addColumn("Total");
+                formatotabla();
+            }
+            if (idsubzona == 102) {
+                model.addColumn("Cod. Producto");
+                model.addColumn("Descripcion");
+                model.addColumn("Laboratorio");
+                model.addColumn("F20");
+                model.addColumn("F24");
+                model.addColumn("F32");
+                model.addColumn("F33");
+                model.addColumn("F62");
+                model.addColumn("Total");
+                formatotabla();
+            }
+            if (idsubzona == 103) {
+                model.addColumn("Cod. Producto");
+                model.addColumn("Descripcion");
+                model.addColumn("Laboratorio");
+                model.addColumn("F6");
+                model.addColumn("F14");
+                model.addColumn("F40");
+                model.addColumn("F44");
+                model.addColumn("F63");
+                model.addColumn("F69");
+                model.addColumn("F72");
+                model.addColumn("Total");
+                formatotabla();
+            }
+        }
+        if (idzona == 101) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F8");
+            model.addColumn("F9");
+            model.addColumn("F10");
+            model.addColumn("F13");
+            model.addColumn("F15");
+            model.addColumn("F18");
+            model.addColumn("F19");
+            model.addColumn("F30");
+            model.addColumn("F36");
+            model.addColumn("F51");
+            model.addColumn("F61");
+            model.addColumn("F67");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 102) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("S1");
+            model.addColumn("F5");
+            model.addColumn("F11");
+            model.addColumn("F68");
+            model.addColumn("F73");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 103) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F7");
+            model.addColumn("F12");
+            model.addColumn("F16");
+            model.addColumn("F26");
+            model.addColumn("F27");
+            model.addColumn("F28");
+            model.addColumn("F29");
+            model.addColumn("F37");
+            model.addColumn("F64");
+            model.addColumn("F66");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 104) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F17");
+            model.addColumn("F21");
+            model.addColumn("F22");
+            model.addColumn("F23");
+            model.addColumn("F38");
+            model.addColumn("F48");
+            model.addColumn("F52");
+            model.addColumn("F53");
+            model.addColumn("F56");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 105) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F39");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 106) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F41");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 107) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F25");
+            model.addColumn("F31");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 108) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F45");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 109) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F46");
+            model.addColumn("F60");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 110) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F47");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 111) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F54");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 112) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F42");
+            model.addColumn("Total");
+            formatotabla();
+        }
+        if (idzona == 115) {
+            model.addColumn("Cod. Producto");
+            model.addColumn("Descripcion");
+            model.addColumn("Laboratorio");
+            model.addColumn("F55");
+            model.addColumn("F57");
+            model.addColumn("Total");
+            formatotabla();
+        }
+
     }
 
     /**
@@ -589,20 +1310,18 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
     private com.toedter.calendar.JDateChooser jDateChooser1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
