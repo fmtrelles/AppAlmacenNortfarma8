@@ -63,6 +63,7 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
     ArrayList<ZonaPiuraCastilla> listaCastilla = new ArrayList<ZonaPiuraCastilla>();
     ArrayList<ZonaPiuraMercado> listamercado = new ArrayList<ZonaPiuraMercado>();
     ArrayList<ZonaPiuraUrba> listaUrba = new ArrayList<ZonaPiuraUrba>();
+    ArrayList<ZonaTotal> listatotal = new ArrayList<ZonaTotal>();
 
     ArrayList lista = new ArrayList();
     int col = 0;
@@ -281,7 +282,7 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(633, Short.MAX_VALUE))
+                .addContainerGap(709, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
@@ -295,11 +296,11 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jCheckBox1))
                 .addGap(9, 9, 9)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -348,7 +349,7 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
         jTextField1.setText("");
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
-    public void mostrar(){
+    public void mostrar() {
         busqueda = 0;
         if (busqueda == 0) {
             model.setRowCount(0);
@@ -484,10 +485,19 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
+            } else {
+                
+
+        model.addColumn("Cod. Producto");
+        model.addColumn("Descripcion");
+        model.addColumn("Laboratorio");
+        model.addColumn("Total");
+                listatotal = DBResumenDetalle.BuscarDetallesZonaTotal(fecha);
+                mostrartotal();
             }
         }
     }
-    
+
     public void ExportarExcel() {
         if (model.getRowCount() > 0) {
             try {
@@ -503,6 +513,25 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
             }
         } else {
             JOptionPane.showMessageDialog(null, "No existen datos", "Error al generar Archivo Excel", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void mostrartotal() {
+        model.setRowCount(0);
+        //model.setColumnCount(0);
+        int i = listatotal.size();
+        Object[] p = new Object[i];
+        if (i != 0) {
+            for (int j = 0; j < i; j++) {
+                ZonaTotal resumen = listatotal.get(j);
+                model.addRow(p);
+                model.setValueAt(resumen.getCodigo(), j, 0);
+                model.setValueAt(resumen.getDescripcion(), j, 1);
+                model.setValueAt(resumen.getLaboratorio(), j, 2);
+                model.setValueAt(resumen.getTotal(), j, 3);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos", "Error al mostrar", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -943,25 +972,25 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
                     if (jComboBox2.getSelectedItem() == "Centro") {
                         idsubzona = 100;
                         zonacombo(idzona, idsubzona);
-                        listaCentro = DBResumenDetalle.BuscarDetallesZonaPiuraCentroFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                        listaCentro = DBResumenDetalle.BuscarDetallesZonaPiuraCentroFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                         mostrarcentro();
                     }
                     if (jComboBox2.getSelectedItem() == "Castilla") {
                         idsubzona = 101;
                         zonacombo(idzona, idsubzona);
-                        listaCastilla = DBResumenDetalle.BuscarDetallesZonaPiuraCastillaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                        listaCastilla = DBResumenDetalle.BuscarDetallesZonaPiuraCastillaFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                         mostrarcastilla();
                     }
                     if (jComboBox2.getSelectedItem() == "Mercado") {
                         idsubzona = 102;
                         zonacombo(idzona, idsubzona);
-                        listamercado = DBResumenDetalle.BuscarDetallesZonaPiuraMercadoFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                        listamercado = DBResumenDetalle.BuscarDetallesZonaPiuraMercadoFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                         mostrarmercado();
                     }
                     if (jComboBox2.getSelectedItem() == "Urba - Zona Oeste") {
                         idsubzona = 103;
                         zonacombo(idzona, idsubzona);
-                        listaUrba = DBResumenDetalle.BuscarDetallesZonaPiuraUrbaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                        listaUrba = DBResumenDetalle.BuscarDetallesZonaPiuraUrbaFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                         mostrarurba();
                     }
                     jComboBox2.setEnabled(true);
@@ -970,91 +999,91 @@ public class FrmConsultarResumen extends javax.swing.JFrame {
                 }
                 if (idzona == 101) {
                     zonacombo(idzona, idsubzona);
-                    listaChiclayo = DBResumenDetalle.BuscarDetallesZonaChiclayoFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaChiclayo = DBResumenDetalle.BuscarDetallesZonaChiclayoFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarchiclayo();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 102) {
                     zonacombo(idzona, idsubzona);
-                    listaSullana = DBResumenDetalle.BuscarDetallesZonaSullanaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaSullana = DBResumenDetalle.BuscarDetallesZonaSullanaFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarsullana();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 103) {
                     zonacombo(idzona, idsubzona);
-                    listaTumbes = DBResumenDetalle.BuscarDetallesZonaTumbesFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaTumbes = DBResumenDetalle.BuscarDetallesZonaTumbesFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarTumbes();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 104) {
                     zonacombo(idzona, idsubzona);
-                    listaTrujillo = DBResumenDetalle.BuscarDetallesZonaTrujilloFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaTrujillo = DBResumenDetalle.BuscarDetallesZonaTrujilloFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarTrujillo();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 105) {
                     zonacombo(idzona, idsubzona);
-                    listaunion = DBResumenDetalle.BuscarDetallesZonaUnionFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaunion = DBResumenDetalle.BuscarDetallesZonaUnionFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarUnion();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 106) {
                     zonacombo(idzona, idsubzona);
-                    listaSechura = DBResumenDetalle.BuscarDetallesZonaSechuraFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaSechura = DBResumenDetalle.BuscarDetallesZonaSechuraFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarsechura();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 107) {
                     zonacombo(idzona, idsubzona);
-                    listaTalara = DBResumenDetalle.BuscarDetallesZonaTalaraFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaTalara = DBResumenDetalle.BuscarDetallesZonaTalaraFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrartalara();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 108) {
                     zonacombo(idzona, idsubzona);
-                    listaCatacaos = DBResumenDetalle.BuscarDetallesZonaCatacaosFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaCatacaos = DBResumenDetalle.BuscarDetallesZonaCatacaosFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarCatacaos();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 109) {
                     zonacombo(idzona, idsubzona);
-                    listaPaita = DBResumenDetalle.BuscarDetallesZonaPaitaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaPaita = DBResumenDetalle.BuscarDetallesZonaPaitaFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarPaita();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 110) {
                     zonacombo(idzona, idsubzona);
-                    listaChulucanas = DBResumenDetalle.BuscarDetallesZonaChulucanasFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaChulucanas = DBResumenDetalle.BuscarDetallesZonaChulucanasFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarChulucanas();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 111) {
                     zonacombo(idzona, idsubzona);
-                    listaChimbote = DBResumenDetalle.BuscarDetallesZonaChimboteFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaChimbote = DBResumenDetalle.BuscarDetallesZonaChimboteFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarChimbote();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 112) {
                     zonacombo(idzona, idsubzona);
-                    listaMancora = DBResumenDetalle.BuscarDetallesZonaMancoraFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaMancora = DBResumenDetalle.BuscarDetallesZonaMancoraFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarMancora();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);
                 }
                 if (idzona == 115) {
                     zonacombo(idzona, idsubzona);
-                    listaCajamarca = DBResumenDetalle.BuscarDetallesZonaCajamarcaFiltro(fecha, idzona, idsubzona,jTextField1.getText());
+                    listaCajamarca = DBResumenDetalle.BuscarDetallesZonaCajamarcaFiltro(fecha, idzona, idsubzona, jTextField1.getText());
                     mostrarCajamarca();
                     busqueda = 0;
                     jComboBox2.setEnabled(false);

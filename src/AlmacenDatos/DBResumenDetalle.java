@@ -1155,4 +1155,28 @@ public class DBResumenDetalle {
         }
         return lista;
     }
+    
+    public static ArrayList<ZonaTotal> BuscarDetallesZonaTotal(String fecha) {
+
+        ArrayList<ZonaTotal> lista = new ArrayList();
+        try {
+            Connection con = BD.getConnection();
+            PreparedStatement st = null;
+            st = con.prepareStatement("CALL PROC_BUSCAR_ZONAS_TOTALES(?)");
+            st.setString(1, fecha);
+            ResultSet rs = st.executeQuery();   
+            while (rs.next()) {
+                ZonaTotal detalle = new ZonaTotal();
+                detalle.setCodigo(rs.getString(1));
+                detalle.setDescripcion(rs.getString(2));
+                detalle.setLaboratorio(rs.getString(3));                
+                detalle.setTotal(rs.getInt(4));
+                lista.add(detalle);
+            }
+            return lista;
+        } catch (SQLException ex) {
+            System.out.println("Error al Buscar detalles por Zona " + ex);
+        }
+        return lista;
+    }
 }
